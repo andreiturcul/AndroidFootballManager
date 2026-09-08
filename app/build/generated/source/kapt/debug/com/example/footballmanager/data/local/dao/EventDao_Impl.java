@@ -58,7 +58,7 @@ public final class EventDao_Impl implements EventDao {
   }
 
   @Override
-  public Object insert(final Event event, final Continuation<? super Long> $completion) {
+  public Object insert(final Event event, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -72,11 +72,11 @@ public final class EventDao_Impl implements EventDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object findByName(final EventName name, final Continuation<? super Event> $completion) {
+  public Object findByName(final EventName name, final Continuation<? super Event> arg1) {
     final String _sql = "SELECT * FROM events WHERE name = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -117,7 +117,7 @@ public final class EventDao_Impl implements EventDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @NonNull

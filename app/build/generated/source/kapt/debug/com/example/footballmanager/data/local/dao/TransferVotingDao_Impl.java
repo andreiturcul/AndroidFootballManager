@@ -84,7 +84,7 @@ public final class TransferVotingDao_Impl implements TransferVotingDao {
   }
 
   @Override
-  public Object insert(final TransferVoting vote, final Continuation<? super Long> $completion) {
+  public Object insert(final TransferVoting vote, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -98,11 +98,11 @@ public final class TransferVotingDao_Impl implements TransferVotingDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object update(final TransferVoting vote, final Continuation<? super Unit> $completion) {
+  public Object update(final TransferVoting vote, final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -116,12 +116,12 @@ public final class TransferVotingDao_Impl implements TransferVotingDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
   public Object findVote(final long transferId, final long userId,
-      final Continuation<? super TransferVoting> $completion) {
+      final Continuation<? super TransferVoting> arg2) {
     final String _sql = "SELECT * FROM transfer_votings WHERE transferId = ? AND userId = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
@@ -169,7 +169,7 @@ public final class TransferVotingDao_Impl implements TransferVotingDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @NonNull

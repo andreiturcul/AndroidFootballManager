@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -27,6 +28,19 @@ class TransfersViewModel(
     private val footballDataRepository: FootballDataRepository,
     private val currentUserId: Long
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            combine(
+                footballDataRepository.observePlayers(),
+                footballDataRepository.observeTeams()
+            ) { players, teams ->
+                if (players.isNotEmpty() && teams.isNotEmpty()) {
+                    transferRepository.seedIfEmpty(players, teams)
+                }
+            }.first()
+        }
+    }
 
     val uiState: StateFlow<TransfersUiState> = combine(
         transferRepository.observeTransfers(),

@@ -61,7 +61,7 @@ public final class TeamFormationDao_Impl implements TeamFormationDao {
 
   @Override
   public Object insertAll(final List<TeamFormation> formations,
-      final Continuation<? super Unit> $completion) {
+      final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -75,7 +75,7 @@ public final class TeamFormationDao_Impl implements TeamFormationDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
@@ -125,7 +125,7 @@ public final class TeamFormationDao_Impl implements TeamFormationDao {
   }
 
   @Override
-  public Object count(final Continuation<? super Integer> $completion) {
+  public Object count(final Continuation<? super Integer> arg0) {
     final String _sql = "SELECT COUNT(*) FROM team_formations";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
@@ -153,11 +153,11 @@ public final class TeamFormationDao_Impl implements TeamFormationDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg0);
   }
 
   @Override
-  public Object getAllOnce(final Continuation<? super List<TeamFormation>> $completion) {
+  public Object getAllOnce(final Continuation<? super List<TeamFormation>> arg0) {
     final String _sql = "SELECT * FROM team_formations ORDER BY id";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
@@ -196,7 +196,7 @@ public final class TeamFormationDao_Impl implements TeamFormationDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg0);
   }
 
   @NonNull

@@ -4,6 +4,8 @@ import com.example.footballmanager.data.local.dao.TransferDao
 import com.example.footballmanager.data.local.dao.TransferVotingDao
 import com.example.footballmanager.data.local.dao.UserTransferProposalDao
 import com.example.footballmanager.data.local.dao.UserTransferProposalVotingDao
+import com.example.footballmanager.data.local.entities.Player
+import com.example.footballmanager.data.local.entities.PlayerTeam
 import com.example.footballmanager.data.local.entities.Transfer
 import com.example.footballmanager.data.local.entities.TransferVoting
 import com.example.footballmanager.data.local.entities.UserTransferProposal
@@ -50,6 +52,54 @@ class TransferRepository(
         if (existing == null) {
             proposalVotingDao.insert(UserTransferProposalVoting(userId = userId, proposalId = proposalId))
             proposalDao.addVotes(proposalId, if (upvote) 1 else -1)
+        }
+    }
+
+    suspend fun seedIfEmpty(players: List<Player>, teams: List<PlayerTeam>) {
+        if (players.isEmpty() || teams.isEmpty()) return
+
+        fun getPlayer(name: String) = players.find { it.name.equals(name, ignoreCase = true) }
+        fun getTeam(name: String) = teams.find { it.name.equals(name, ignoreCase = true) }
+
+        if (transferDao.count() == 0) {
+            val mbappe = getPlayer("Kylian Mbappé")
+            val psg = getTeam("PSG")
+            val real = getTeam("Real Madrid")
+
+            if (mbappe != null && real != null) {
+                createTransfer(
+                    playerId = mbappe.id,
+                    fromTeamId = psg?.id,
+                    toTeamId = real.id,
+                    price = 180.0
+                )
+            }
+        }
+
+        if (proposalDao.count() == 0) {
+            val haaland = getPlayer("Erling Haaland")
+            val manCity = getTeam("Manchester City")
+            val real = getTeam("Real Madrid")
+            val barca = getTeam("Barcelona")
+            val deBruyne = getPlayer("Kevin De Bruyne")
+
+            if (haaland != null && real != null) {
+                proposeTransfer(
+                    userId = 1L,
+                    playerId = haaland.id,
+                    fromTeamId = manCity?.id,
+                    toTeamId = real.id
+                )
+            }
+
+            if (deBruyne != null && barca != null) {
+                proposeTransfer(
+                    userId = 1L,
+                    playerId = deBruyne.id,
+                    fromTeamId = manCity?.id,
+                    toTeamId = barca.id
+                )
+            }
         }
     }
 }

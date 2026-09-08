@@ -17,6 +17,7 @@ import com.example.footballmanager.data.local.entities.PlayerTeam;
 import java.lang.Class;
 import java.lang.Exception;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -36,6 +37,8 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
   private final EntityInsertionAdapter<PlayerTeam> __insertionAdapterOfPlayerTeam;
 
   private final EntityDeletionOrUpdateAdapter<PlayerTeam> __updateAdapterOfPlayerTeam;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteDuplicates;
 
   private final SharedSQLiteStatement __preparedStmtOfAddVotes;
 
@@ -118,6 +121,21 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
         statement.bindLong(9, entity.getId());
       }
     };
+    this.__preparedStmtOfDeleteDuplicates = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "\n"
+                + "        DELETE FROM player_teams \n"
+                + "        WHERE id NOT IN (\n"
+                + "            SELECT MIN(id) \n"
+                + "            FROM player_teams \n"
+                + "            GROUP BY COALESCE(NULLIF(remoteId, ''), name)\n"
+                + "        )\n"
+                + "    ";
+        return _query;
+      }
+    };
     this.__preparedStmtOfAddVotes = new SharedSQLiteStatement(__db) {
       @Override
       @NonNull
@@ -129,8 +147,7 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
   }
 
   @Override
-  public Object insertAll(final List<PlayerTeam> teams,
-      final Continuation<? super Unit> $completion) {
+  public Object insertAll(final List<PlayerTeam> teams, final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -144,11 +161,29 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object update(final PlayerTeam team, final Continuation<? super Unit> $completion) {
+  public Object insert(final PlayerTeam team, final Continuation<? super Long> arg1) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
+      @Override
+      @NonNull
+      public Long call() throws Exception {
+        __db.beginTransaction();
+        try {
+          final Long _result = __insertionAdapterOfPlayerTeam.insertAndReturnId(team);
+          __db.setTransactionSuccessful();
+          return _result;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, arg1);
+  }
+
+  @Override
+  public Object update(final PlayerTeam team, final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -162,12 +197,34 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object addVotes(final long id, final int delta,
-      final Continuation<? super Unit> $completion) {
+  public Object deleteDuplicates(final Continuation<? super Unit> arg0) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteDuplicates.acquire();
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteDuplicates.release(_stmt);
+        }
+      }
+    }, arg0);
+  }
+
+  @Override
+  public Object addVotes(final long id, final int delta, final Continuation<? super Unit> arg2) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -190,7 +247,7 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
           __preparedStmtOfAddVotes.release(_stmt);
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @Override
@@ -267,7 +324,7 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
   }
 
   @Override
-  public Object getById(final long id, final Continuation<? super PlayerTeam> $completion) {
+  public Object getById(final long id, final Continuation<? super PlayerTeam> arg1) {
     final String _sql = "SELECT * FROM player_teams WHERE id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -335,11 +392,11 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object count(final Continuation<? super Integer> $completion) {
+  public Object count(final Continuation<? super Integer> arg0) {
     final String _sql = "SELECT COUNT(*) FROM player_teams";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
@@ -367,7 +424,77 @@ public final class PlayerTeamDao_Impl implements PlayerTeamDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg0);
+  }
+
+  @Override
+  public Object getAllOnce(final Continuation<? super List<PlayerTeam>> arg0) {
+    final String _sql = "SELECT * FROM player_teams";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<PlayerTeam>>() {
+      @Override
+      @NonNull
+      public List<PlayerTeam> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+          final int _cursorIndexOfUcl = CursorUtil.getColumnIndexOrThrow(_cursor, "ucl");
+          final int _cursorIndexOfLeague = CursorUtil.getColumnIndexOrThrow(_cursor, "league");
+          final int _cursorIndexOfCup = CursorUtil.getColumnIndexOrThrow(_cursor, "cup");
+          final int _cursorIndexOfVotes = CursorUtil.getColumnIndexOrThrow(_cursor, "votes");
+          final int _cursorIndexOfBadgeUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "badgeUrl");
+          final int _cursorIndexOfRemoteId = CursorUtil.getColumnIndexOrThrow(_cursor, "remoteId");
+          final List<PlayerTeam> _result = new ArrayList<PlayerTeam>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final PlayerTeam _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+            }
+            final boolean _tmpUcl;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfUcl);
+            _tmpUcl = _tmp != 0;
+            final String _tmpLeague;
+            if (_cursor.isNull(_cursorIndexOfLeague)) {
+              _tmpLeague = null;
+            } else {
+              _tmpLeague = _cursor.getString(_cursorIndexOfLeague);
+            }
+            final boolean _tmpCup;
+            final int _tmp_1;
+            _tmp_1 = _cursor.getInt(_cursorIndexOfCup);
+            _tmpCup = _tmp_1 != 0;
+            final int _tmpVotes;
+            _tmpVotes = _cursor.getInt(_cursorIndexOfVotes);
+            final String _tmpBadgeUrl;
+            if (_cursor.isNull(_cursorIndexOfBadgeUrl)) {
+              _tmpBadgeUrl = null;
+            } else {
+              _tmpBadgeUrl = _cursor.getString(_cursorIndexOfBadgeUrl);
+            }
+            final String _tmpRemoteId;
+            if (_cursor.isNull(_cursorIndexOfRemoteId)) {
+              _tmpRemoteId = null;
+            } else {
+              _tmpRemoteId = _cursor.getString(_cursorIndexOfRemoteId);
+            }
+            _item = new PlayerTeam(_tmpId,_tmpName,_tmpUcl,_tmpLeague,_tmpCup,_tmpVotes,_tmpBadgeUrl,_tmpRemoteId);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, arg0);
   }
 
   @NonNull

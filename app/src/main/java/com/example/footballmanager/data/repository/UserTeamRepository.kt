@@ -38,6 +38,10 @@ class UserTeamRepository(
         userTeamPlayerDao.insert(UserTeamPlayer(userTeamId = userTeamId, playerId = playerId, slotNumber = slotNumber))
     }
 
+    suspend fun clearTeamPlayers(userTeamId: Long) {
+        userTeamPlayerDao.clearTeam(userTeamId)
+    }
+
     suspend fun submitTeam(team: UserTeam) {
         userTeamDao.update(team.copy(submitted = true))
     }

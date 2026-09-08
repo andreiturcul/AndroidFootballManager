@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.footballmanager.ui.goat.GoatScreen
 import com.example.footballmanager.ui.myteam.MyTeamScreen
 import com.example.footballmanager.ui.players.PlayerDetailScreen
 import com.example.footballmanager.ui.players.PlayersScreen
@@ -24,10 +25,11 @@ private sealed class BottomTab(val route: String, val label: String, val icon: a
     object Players : BottomTab("home_players", "Players", Icons.Filled.Groups)
     object Transfers : BottomTab("home_transfers", "Transfers", Icons.Filled.SwapHoriz)
     object MyTeam : BottomTab("home_myteam", "My Team", Icons.Filled.SportsSoccer)
+    object Goat : BottomTab("home_goat", "The GOAT", Icons.Filled.SportsSoccer)
     object Profile : BottomTab("home_profile", "Profile", Icons.Filled.Person)
 }
 
-private val tabs = listOf(BottomTab.Teams, BottomTab.Players, BottomTab.Transfers, BottomTab.MyTeam, BottomTab.Profile)
+private val tabs = listOf(BottomTab.Teams, BottomTab.Players, BottomTab.Transfers, BottomTab.MyTeam, BottomTab.Goat, BottomTab.Profile)
 
 @Composable
 fun HomeScreen(currentUserId: Long, onLoggedOut: () -> Unit) {
@@ -94,6 +96,9 @@ fun HomeScreen(currentUserId: Long, onLoggedOut: () -> Unit) {
             }
             composable(BottomTab.MyTeam.route) {
                 MyTeamScreen(currentUserId = currentUserId)
+            }
+            composable(BottomTab.Goat.route) {
+                GoatScreen()
             }
             composable(BottomTab.Profile.route) {
                 ProfileScreen(currentUserId = currentUserId, onLoggedOut = onLoggedOut)

@@ -12,6 +12,9 @@ interface TransferDao {
     @Insert
     suspend fun insert(transfer: Transfer): Long
 
+    @Query("SELECT COUNT(*) FROM transfers")
+    suspend fun count(): Int
+
     @Query("UPDATE transfers SET votes = votes + :delta WHERE id = :id")
     suspend fun addVotes(id: Long, delta: Int)
 }

@@ -65,8 +65,7 @@ public final class TacticDao_Impl implements TacticDao {
   }
 
   @Override
-  public Object insertAll(final List<Tactic> tactics,
-      final Continuation<? super Unit> $completion) {
+  public Object insertAll(final List<Tactic> tactics, final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -80,7 +79,7 @@ public final class TacticDao_Impl implements TacticDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
@@ -132,7 +131,7 @@ public final class TacticDao_Impl implements TacticDao {
   }
 
   @Override
-  public Object count(final Continuation<? super Integer> $completion) {
+  public Object count(final Continuation<? super Integer> arg0) {
     final String _sql = "SELECT COUNT(*) FROM tactics";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
@@ -160,7 +159,7 @@ public final class TacticDao_Impl implements TacticDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg0);
   }
 
   @NonNull

@@ -73,7 +73,7 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
   }
 
   @Override
-  public Object insert(final UserTeamPlayer entry, final Continuation<? super Long> $completion) {
+  public Object insert(final UserTeamPlayer entry, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -87,12 +87,12 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
   public Object clearSlot(final long userTeamId, final int slotNumber,
-      final Continuation<? super Unit> $completion) {
+      final Continuation<? super Unit> arg2) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -115,11 +115,11 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
           __preparedStmtOfClearSlot.release(_stmt);
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @Override
-  public Object clearTeam(final long userTeamId, final Continuation<? super Unit> $completion) {
+  public Object clearTeam(final long userTeamId, final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -140,7 +140,7 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
           __preparedStmtOfClearTeam.release(_stmt);
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override

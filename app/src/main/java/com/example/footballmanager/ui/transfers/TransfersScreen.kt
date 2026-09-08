@@ -54,6 +54,8 @@ fun TransfersScreen(currentUserId: Long) {
                     ProposalRow(
                         proposal = proposal,
                         playerName = state.players.find { it.id == proposal.playerId }?.name ?: "Unknown player",
+                        fromName = state.teams.find { it.id == proposal.fromTeamId }?.name,
+                        toName = state.teams.find { it.id == proposal.toTeamId }?.name,
                         onVote = { up -> viewModel.voteProposal(proposal.id, up) }
                     )
                     Spacer(Modifier.height(8.dp))
@@ -65,7 +67,7 @@ fun TransfersScreen(currentUserId: Long) {
 
 @Composable
 private fun TransferRow(transfer: Transfer, playerName: String, fromName: String?, toName: String?, onVote: (Boolean) -> Unit) {
-    ElevatedCard {
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp)) {
             Text(playerName, style = MaterialTheme.typography.titleMedium)
             Text("${fromName ?: "Free agent"} → ${toName ?: "Free agent"}", style = MaterialTheme.typography.bodyMedium)
@@ -79,11 +81,23 @@ private fun TransferRow(transfer: Transfer, playerName: String, fromName: String
 }
 
 @Composable
-private fun ProposalRow(proposal: UserTransferProposal, playerName: String, onVote: (Boolean) -> Unit) {
-    ElevatedCard {
+private fun ProposalRow(
+    proposal: UserTransferProposal,
+    playerName: String,
+    fromName: String?,
+    toName: String?,
+    onVote: (Boolean) -> Unit
+) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp)) {
             Text(playerName, style = MaterialTheme.typography.titleMedium)
-            Text("Proposed transfer", style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = "Proposed move: ${fromName ?: "Current Club"} → ${toName ?: "Unknown Destination"}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(Modifier.height(4.dp))
             VoteButtons(votes = proposal.votes, onUpvote = { onVote(true) }, onDownvote = { onVote(false) })
         }
     }

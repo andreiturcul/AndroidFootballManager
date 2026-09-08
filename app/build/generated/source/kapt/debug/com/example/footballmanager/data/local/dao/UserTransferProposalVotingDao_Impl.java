@@ -51,7 +51,7 @@ public final class UserTransferProposalVotingDao_Impl implements UserTransferPro
 
   @Override
   public Object insert(final UserTransferProposalVoting vote,
-      final Continuation<? super Long> $completion) {
+      final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -65,12 +65,12 @@ public final class UserTransferProposalVotingDao_Impl implements UserTransferPro
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
   public Object findVote(final long proposalId, final long userId,
-      final Continuation<? super UserTransferProposalVoting> $completion) {
+      final Continuation<? super UserTransferProposalVoting> arg2) {
     final String _sql = "SELECT * FROM user_transfer_proposal_votings WHERE proposalId = ? AND userId = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
@@ -105,7 +105,7 @@ public final class UserTransferProposalVotingDao_Impl implements UserTransferPro
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @NonNull

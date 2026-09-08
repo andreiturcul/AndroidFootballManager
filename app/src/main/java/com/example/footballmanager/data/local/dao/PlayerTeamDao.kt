@@ -15,11 +15,27 @@ interface PlayerTeamDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(teams: List<PlayerTeam>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(team: PlayerTeam): Long
+
     @Update
     suspend fun update(team: PlayerTeam)
 
     @Query("SELECT COUNT(*) FROM player_teams")
     suspend fun count(): Int
+
+    @Query("SELECT * FROM player_teams")
+    suspend fun getAllOnce(): List<PlayerTeam>
+
+    @Query("""
+        DELETE FROM player_teams 
+        WHERE id NOT IN (
+            SELECT MIN(id) 
+            FROM player_teams 
+            GROUP BY COALESCE(NULLIF(remoteId, ''), name)
+        )
+    """)
+    suspend fun deleteDuplicates()
 
     @Query("UPDATE player_teams SET votes = votes + :delta WHERE id = :id")
     suspend fun addVotes(id: Long, delta: Int)

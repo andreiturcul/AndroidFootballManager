@@ -116,7 +116,7 @@ public final class UserDao_Impl implements UserDao {
   }
 
   @Override
-  public Object insert(final User user, final Continuation<? super Long> $completion) {
+  public Object insert(final User user, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -130,11 +130,11 @@ public final class UserDao_Impl implements UserDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object update(final User user, final Continuation<? super Unit> $completion) {
+  public Object update(final User user, final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -148,11 +148,11 @@ public final class UserDao_Impl implements UserDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object findByEmail(final String email, final Continuation<? super User> $completion) {
+  public Object findByEmail(final String email, final Continuation<? super User> arg1) {
     final String _sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -218,11 +218,11 @@ public final class UserDao_Impl implements UserDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object findById(final long id, final Continuation<? super User> $completion) {
+  public Object findById(final long id, final Continuation<? super User> arg1) {
     final String _sql = "SELECT * FROM users WHERE id = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -284,7 +284,7 @@ public final class UserDao_Impl implements UserDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @NonNull

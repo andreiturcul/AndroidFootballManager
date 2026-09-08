@@ -26,6 +26,9 @@ interface UserTransferProposalDao {
     @Insert
     suspend fun insert(proposal: UserTransferProposal): Long
 
+    @Query("SELECT COUNT(*) FROM user_transfer_proposals")
+    suspend fun count(): Int
+
     @Query("UPDATE user_transfer_proposals SET votes = votes + :delta WHERE id = :id")
     suspend fun addVotes(id: Long, delta: Int)
 }

@@ -23,15 +23,33 @@ class PlayersViewModel(private val repository: FootballDataRepository) : ViewMod
 
     private val loading = MutableStateFlow(false)
     private val errorMsg = MutableStateFlow<String?>(null)
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    init {
+        viewModelScope.launch {
+            repository.cleanupAndSeed()
+        }
+    }
 
     val uiState: StateFlow<PlayersUiState> = combine(
         repository.observePlayers(),
         repository.observeTeams(),
         loading,
-        errorMsg
-    ) { players, teams, isLoading, error ->
-        PlayersUiState(players, teams, isLoading, error)
+        errorMsg,
+        _searchQuery
+    ) { players, teams, isLoading, error, query ->
+        val filteredPlayers = if (query.isBlank()) {
+            players
+        } else {
+            players.filter { it.name.contains(query, ignoreCase = true) }
+        }
+        PlayersUiState(filteredPlayers, teams, isLoading, error)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PlayersUiState())
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
 
     /** Fetches teams (HTTP #1) and caches them via Room. */
     fun refreshFromApi(league: String = "English_Premier_League") {

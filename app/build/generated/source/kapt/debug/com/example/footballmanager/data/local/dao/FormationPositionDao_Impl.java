@@ -56,7 +56,7 @@ public final class FormationPositionDao_Impl implements FormationPositionDao {
 
   @Override
   public Object insertAll(final List<FormationPosition> positions,
-      final Continuation<? super Unit> $completion) {
+      final Continuation<? super Unit> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -70,7 +70,7 @@ public final class FormationPositionDao_Impl implements FormationPositionDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override

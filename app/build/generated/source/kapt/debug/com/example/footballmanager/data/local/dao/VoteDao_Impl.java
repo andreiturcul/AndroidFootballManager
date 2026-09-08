@@ -53,7 +53,7 @@ public final class VoteDao_Impl implements VoteDao {
   }
 
   @Override
-  public Object insert(final Vote vote, final Continuation<? super Long> $completion) {
+  public Object insert(final Vote vote, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -67,12 +67,12 @@ public final class VoteDao_Impl implements VoteDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
   public Object findVote(final long eventTypeId, final long userId,
-      final Continuation<? super Vote> $completion) {
+      final Continuation<? super Vote> arg2) {
     final String _sql = "SELECT * FROM votes WHERE eventTypeId = ? AND userId = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
@@ -115,7 +115,7 @@ public final class VoteDao_Impl implements VoteDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @NonNull

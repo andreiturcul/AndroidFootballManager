@@ -21,6 +21,12 @@ class TeamsViewModel(private val repository: FootballDataRepository) : ViewModel
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
+    init {
+        viewModelScope.launch {
+            repository.cleanupAndSeed()
+        }
+    }
+
     fun loadTeams(league: String) {
         viewModelScope.launch {
             _isLoading.value = true

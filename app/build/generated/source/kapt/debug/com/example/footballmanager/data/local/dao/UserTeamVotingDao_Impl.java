@@ -51,7 +51,7 @@ public final class UserTeamVotingDao_Impl implements UserTeamVotingDao {
   }
 
   @Override
-  public Object insert(final UserTeamVoting vote, final Continuation<? super Long> $completion) {
+  public Object insert(final UserTeamVoting vote, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -65,12 +65,12 @@ public final class UserTeamVotingDao_Impl implements UserTeamVotingDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
   public Object findVote(final long userTeamId, final long userId,
-      final Continuation<? super UserTeamVoting> $completion) {
+      final Continuation<? super UserTeamVoting> arg2) {
     final String _sql = "SELECT * FROM user_team_votings WHERE userTeamId = ? AND userId = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
@@ -105,12 +105,11 @@ public final class UserTeamVotingDao_Impl implements UserTeamVotingDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @Override
-  public Object countForTeam(final long userTeamId,
-      final Continuation<? super Integer> $completion) {
+  public Object countForTeam(final long userTeamId, final Continuation<? super Integer> arg1) {
     final String _sql = "SELECT COUNT(*) FROM user_team_votings WHERE userTeamId = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -140,7 +139,7 @@ public final class UserTeamVotingDao_Impl implements UserTeamVotingDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @NonNull
