@@ -11,13 +11,18 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.footballmanager.FootballApp
 import com.example.footballmanager.data.local.entities.Player
 import com.example.footballmanager.ui.components.EmptyState
 import com.example.footballmanager.ui.components.ErrorBanner
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
 import com.example.footballmanager.ui.components.PriceTag
+import com.example.footballmanager.ui.components.footballTextFieldColors
+import com.example.footballmanager.ui.components.footballTopBarColors
 import com.example.footballmanager.util.viewModelFactory
 
 /** Requirement: "store data into local DB + show data in a scrollable list". */
@@ -30,18 +35,21 @@ fun PlayersScreen(onPlayerClick: (Long) -> Unit) {
     val state by viewModel.uiState.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Players") },
-                actions = {
-                    IconButton(onClick = { viewModel.refreshFromApi() }) {
-                        Icon(Icons.Filled.Refresh, contentDescription = "Refresh from API")
+    FootballPage(FootballScene.PLAYERS) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = { Text("Players") },
+                    colors = footballTopBarColors(),
+                    actions = {
+                        IconButton(onClick = { viewModel.refreshFromApi() }) {
+                            Icon(Icons.Filled.Refresh, contentDescription = "Refresh from API")
+                        }
                     }
-                }
-            )
-        }
-    ) { padding ->
+                )
+            }
+        ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
             OutlinedTextField(
                 value = searchQuery,
@@ -56,7 +64,8 @@ fun PlayersScreen(onPlayerClick: (Long) -> Unit) {
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Search Icon"
                     )
-                }
+                },
+                colors = footballTextFieldColors()
             )
 
             state.error?.let { ErrorBanner(it) }
@@ -75,6 +84,7 @@ fun PlayersScreen(onPlayerClick: (Long) -> Unit) {
                     }
                 }
             }
+        }
         }
     }
 }

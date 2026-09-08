@@ -42,8 +42,11 @@ import com.example.footballmanager.FootballApp
 import com.example.footballmanager.data.local.entities.FormationPosition
 import com.example.footballmanager.data.local.entities.Player
 import com.example.footballmanager.ui.components.EmptyState
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
 import com.example.footballmanager.ui.components.PriceTag
 import com.example.footballmanager.ui.components.SectionTitle
+import com.example.footballmanager.ui.components.footballTopBarColors
 import com.example.footballmanager.util.TeamBudget
 import com.example.footballmanager.util.viewModelFactory
 import kotlin.math.roundToInt
@@ -94,10 +97,17 @@ fun MyTeamScreen(currentUserId: Long) {
         }
     }
 
-    Scaffold(
-        topBar = { TopAppBar(title = { Text(state.userTeam?.name ?: "My Team") }) },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
+    FootballPage(FootballScene.PITCH) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = { Text(state.userTeam?.name ?: "My Team") },
+                    colors = footballTopBarColors()
+                )
+            },
+            snackbarHost = { SnackbarHost(snackbarHostState) }
+        ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding).fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
@@ -134,7 +144,7 @@ fun MyTeamScreen(currentUserId: Long) {
                 Text(
                     "Tap a slot to sign a player. Long-press and drag to move or swap players of the same position.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color(0xFFD1FAE5)
                 )
                 Spacer(Modifier.height(8.dp))
             }
@@ -163,22 +173,23 @@ fun MyTeamScreen(currentUserId: Long) {
         }
     }
 
-    slotBeingEdited?.let { targetSlot ->
-        val assignedIds = state.assignments.values.map { it.id }.toSet()
-        val currentPlayer = state.assignments[targetSlot.slotNumber]
-        PlayerPickerDialog(
-            slot = targetSlot,
-            currentSlotPlayer = currentPlayer,
-            totalSpent = totalSpent,
-            maxBudget = TeamBudget.MAX_EUROS_MILLIONS,
-            allPlayers = state.allPlayers,
-            assignedPlayerIds = assignedIds,
-            onDismiss = { slotBeingEdited = null },
-            onPick = { player ->
-                viewModel.assignPlayer(targetSlot.slotNumber, player)
-                slotBeingEdited = null
-            }
-        )
+        slotBeingEdited?.let { targetSlot ->
+            val assignedIds = state.assignments.values.map { it.id }.toSet()
+            val currentPlayer = state.assignments[targetSlot.slotNumber]
+            PlayerPickerDialog(
+                slot = targetSlot,
+                currentSlotPlayer = currentPlayer,
+                totalSpent = totalSpent,
+                maxBudget = TeamBudget.MAX_EUROS_MILLIONS,
+                allPlayers = state.allPlayers,
+                assignedPlayerIds = assignedIds,
+                onDismiss = { slotBeingEdited = null },
+                onPick = { player ->
+                    viewModel.assignPlayer(targetSlot.slotNumber, player)
+                    slotBeingEdited = null
+                }
+            )
+        }
     }
 }
 

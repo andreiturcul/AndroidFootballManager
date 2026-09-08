@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -16,6 +17,7 @@ fun SectionTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleLarge,
+        color = Color.White,
         modifier = modifier.padding(vertical = 8.dp)
     )
 }
@@ -23,7 +25,7 @@ fun SectionTitle(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun EmptyState(message: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-        Text(message, style = MaterialTheme.typography.bodyMedium, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Text(message, style = MaterialTheme.typography.bodyMedium, color = Color.White, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
     }
 }
 

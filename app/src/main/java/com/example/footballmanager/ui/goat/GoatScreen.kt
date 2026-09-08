@@ -22,27 +22,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
+import com.example.footballmanager.ui.components.footballTopBarColors
 
 @Composable
 fun GoatScreen() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Filled.SportsSoccer,
-                            contentDescription = "Football",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(28.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text("The GOAT", fontWeight = FontWeight.Bold)
-                    }
-                }
-            )
-        }
-    ) { padding ->
+    FootballPage(FootballScene.GOAT) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🐐", fontSize = 24.sp)
+                            Spacer(Modifier.width(8.dp))
+                            Text("The GOAT", fontWeight = FontWeight.Bold)
+                        }
+                    },
+                    colors = footballTopBarColors()
+                )
+            }
+        ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .padding(padding)
@@ -57,7 +58,8 @@ fun GoatScreen() {
             item {
                 Text(
                     text = "Career World Records & Stats",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White
                 )
             }
 
@@ -68,7 +70,8 @@ fun GoatScreen() {
             item {
                 Text(
                     text = "Why Cristiano Ronaldo is The GOAT",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White
                 )
             }
 
@@ -104,6 +107,7 @@ fun GoatScreen() {
                 )
             }
         }
+        }
     }
 }
 
@@ -126,10 +130,8 @@ private fun HeroGoatCard() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "CR7",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.Black
+                    text = "🐐",
+                    fontSize = 36.sp
                 )
             }
 

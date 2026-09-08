@@ -6,10 +6,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.footballmanager.FootballApp
 import com.example.footballmanager.data.local.entities.Player
 import com.example.footballmanager.data.local.entities.PlayerTeam
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
+import com.example.footballmanager.ui.components.footballTextFieldColors
+import com.example.footballmanager.ui.components.footballTopBarColors
 import kotlinx.coroutines.launch
 
 @Composable
@@ -34,39 +39,47 @@ fun ProposeTransferScreen(
         app.footballDataRepository.observeTeams().collect { teams = it }
     }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Propose transfer") }) }) { padding ->
-        Column(modifier = Modifier.padding(padding).padding(16.dp).fillMaxSize()) {
-            player?.let { Text("Player: ${it.name}", style = MaterialTheme.typography.titleMedium) }
-            Spacer(Modifier.height(16.dp))
+    FootballPage(FootballScene.TRANSFERS) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = { TopAppBar(title = { Text("Propose transfer") }, colors = footballTopBarColors()) }
+        ) { padding ->
+            Column(modifier = Modifier.padding(padding).padding(16.dp).fillMaxSize()) {
+                player?.let {
+                    Text("Player: ${it.name}", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                }
+                Spacer(Modifier.height(16.dp))
 
-            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
-                OutlinedTextField(
-                    value = teams.find { it.id == toTeamId }?.name ?: "Select destination team",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Move to") },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
-                )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    teams.forEach { team ->
-                        DropdownMenuItem(text = { Text(team.name) }, onClick = { toTeamId = team.id; expanded = false })
+                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+                    OutlinedTextField(
+                        value = teams.find { it.id == toTeamId }?.name ?: "Select destination team",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Move to") },
+                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                        colors = footballTextFieldColors()
+                    )
+                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        teams.forEach { team ->
+                            DropdownMenuItem(text = { Text(team.name) }, onClick = { toTeamId = team.id; expanded = false })
+                        }
                     }
                 }
-            }
 
-            Spacer(Modifier.height(24.dp))
-            Button(
-                onClick = {
-                    val p = player ?: return@Button
-                    scope.launch {
-                        app.transferRepository.proposeTransfer(currentUserId, p.id, p.teamId, toTeamId)
-                        onDone()
-                    }
-                },
-                enabled = player != null && toTeamId != null,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Submit proposal")
+                Spacer(Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        val p = player ?: return@Button
+                        scope.launch {
+                            app.transferRepository.proposeTransfer(currentUserId, p.id, p.teamId, toTeamId)
+                            onDone()
+                        }
+                    },
+                    enabled = player != null && toTeamId != null,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Submit proposal")
+                }
             }
         }
     }

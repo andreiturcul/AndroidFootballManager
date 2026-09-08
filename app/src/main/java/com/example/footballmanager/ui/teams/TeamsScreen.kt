@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,6 +21,10 @@ import com.example.footballmanager.FootballApp
 import com.example.footballmanager.data.local.entities.PlayerTeam
 import com.example.footballmanager.ui.components.EmptyState
 import com.example.footballmanager.ui.components.ErrorBanner
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
+import com.example.footballmanager.ui.components.footballTextFieldColors
+import com.example.footballmanager.ui.components.footballTopBarColors
 import com.example.footballmanager.util.viewModelFactory
 
 private val LEAGUES = listOf(
@@ -186,7 +191,11 @@ fun TeamsScreen(onTeamSelected: (Long) -> Unit) {
         }
     }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Teams") }) }) { padding ->
+    FootballPage(FootballScene.STADIUM) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = { TopAppBar(title = { Text("Teams") }, colors = footballTopBarColors()) }
+        ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize().padding(12.dp)) {
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -198,7 +207,8 @@ fun TeamsScreen(onTeamSelected: (Long) -> Unit) {
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Filter League") },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = footballTextFieldColors()
                 )
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     LEAGUES.forEach { league ->
@@ -233,10 +243,11 @@ fun TeamsScreen(onTeamSelected: (Long) -> Unit) {
                 }
             }
         }
-    }
+        }
 
-    selectedTeamForTrophies?.let { team ->
-        TeamTrophiesDialog(team = team, onDismiss = { selectedTeamForTrophies = null })
+        selectedTeamForTrophies?.let { team ->
+            TeamTrophiesDialog(team = team, onDismiss = { selectedTeamForTrophies = null })
+        }
     }
 }
 

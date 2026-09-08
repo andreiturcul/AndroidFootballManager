@@ -31,12 +31,12 @@ private val LightColors = lightColorScheme(
     secondary = AccentGold,
     onSecondary = Color.Black,
     background = BackgroundLight,
-    surface = Color.White,
-    onBackground = Color(0xFF0A1A0D),
-    onSurface = Color(0xFF0A1A0D),
+    surface = Color(0xFFF0FDF4),
+    onBackground = Color(0xFF052E16),
+    onSurface = Color(0xFF052E16),
     error = NegativeRed,
     surfaceVariant = CardSurfaceLight,
-    onSurfaceVariant = Color(0xFF1B4D2E)
+    onSurfaceVariant = Color(0xFF166534)
 )
 
 @Composable

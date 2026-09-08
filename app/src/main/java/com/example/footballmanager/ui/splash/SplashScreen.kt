@@ -1,13 +1,14 @@
 package com.example.footballmanager.ui.splash
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.example.footballmanager.FootballApp
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
 import kotlinx.coroutines.flow.first
 
 /**
@@ -24,7 +25,10 @@ fun SplashScreen(
         val userId = app.sessionManager.userIdFlow.first()
         if (userId != null) onSessionFound(userId) else onNoSession()
     }
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+    FootballPage(FootballScene.PITCH) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = Color.White
+        )
     }
 }

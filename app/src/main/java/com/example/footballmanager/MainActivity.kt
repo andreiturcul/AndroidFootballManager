@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun FootballManagerApp() {
     FootballManagerTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
+        Surface(modifier = Modifier.fillMaxSize(), color = androidx.compose.ui.graphics.Color(0xFF052E16)) {
             AppNavGraph()
         }
     }

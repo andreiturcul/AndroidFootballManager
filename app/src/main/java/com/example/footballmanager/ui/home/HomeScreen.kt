@@ -6,6 +6,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,12 +23,17 @@ import com.example.footballmanager.ui.teams.TeamsScreen
 import com.example.footballmanager.ui.transfers.ProposeTransferScreen
 import com.example.footballmanager.ui.transfers.TransfersScreen
 
-private sealed class BottomTab(val route: String, val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
+private sealed class BottomTab(
+    val route: String,
+    val label: String,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    val emoji: String? = null
+) {
     object Teams : BottomTab("home_teams", "Teams", Icons.Filled.Shield)
     object Players : BottomTab("home_players", "Players", Icons.Filled.Groups)
     object Transfers : BottomTab("home_transfers", "Transfers", Icons.Filled.SwapHoriz)
     object MyTeam : BottomTab("home_myteam", "My Team", Icons.Filled.SportsSoccer)
-    object Goat : BottomTab("home_goat", "The GOAT", Icons.Filled.SportsSoccer)
+    object Goat : BottomTab("home_goat", "The GOAT", emoji = "🐐")
     object Profile : BottomTab("home_profile", "Profile", Icons.Filled.Person)
 }
 
@@ -36,10 +44,14 @@ fun HomeScreen(currentUserId: Long, onLoggedOut: () -> Unit) {
     val navController = rememberNavController()
 
     Scaffold(
+        containerColor = Color(0xFF052E16),
         bottomBar = {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = backStackEntry?.destination?.route
-            NavigationBar {
+            NavigationBar(
+                containerColor = Color(0xFF14532D),
+                contentColor = Color.White
+            ) {
                 tabs.forEach { tab ->
                     NavigationBarItem(
                         selected = currentRoute == tab.route,
@@ -50,8 +62,21 @@ fun HomeScreen(currentUserId: Long, onLoggedOut: () -> Unit) {
                                 restoreState = true
                             }
                         },
-                        icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) }
+                        icon = {
+                            if (tab.emoji != null) {
+                                Text(tab.emoji, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                            } else {
+                                Icon(tab.icon!!, contentDescription = tab.label)
+                            }
+                        },
+                        label = { Text(tab.label) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = Color.White,
+                            unselectedIconColor = Color(0xFFBBF7D0),
+                            unselectedTextColor = Color(0xFFBBF7D0),
+                            indicatorColor = Color(0xFF166534)
+                        )
                     )
                 }
             }

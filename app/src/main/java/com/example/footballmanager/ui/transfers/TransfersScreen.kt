@@ -8,14 +8,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.footballmanager.FootballApp
 import com.example.footballmanager.data.local.entities.Transfer
 import com.example.footballmanager.data.local.entities.UserTransferProposal
 import com.example.footballmanager.ui.components.EmptyState
+import com.example.footballmanager.ui.components.FootballPage
+import com.example.footballmanager.ui.components.FootballScene
 import com.example.footballmanager.ui.components.SectionTitle
 import com.example.footballmanager.ui.components.VoteButtons
+import com.example.footballmanager.ui.components.footballTopBarColors
 import com.example.footballmanager.util.viewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,7 +32,11 @@ fun TransfersScreen(currentUserId: Long) {
     )
     val state by viewModel.uiState.collectAsState()
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Transfers") }) }) { padding ->
+    FootballPage(FootballScene.TRANSFERS) {
+        Scaffold(
+            containerColor = Color.Transparent,
+            topBar = { TopAppBar(title = { Text("Transfers") }, colors = footballTopBarColors()) }
+        ) { padding ->
         LazyColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(12.dp)) {
             item { SectionTitle("Confirmed transfers") }
             if (state.transfers.isEmpty()) {
@@ -61,6 +69,7 @@ fun TransfersScreen(currentUserId: Long) {
                     Spacer(Modifier.height(8.dp))
                 }
             }
+        }
         }
     }
 }
