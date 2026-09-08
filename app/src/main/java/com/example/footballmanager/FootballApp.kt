@@ -2,6 +2,7 @@ package com.example.footballmanager
 
 import android.app.Application
 import com.example.footballmanager.data.local.AppDatabase
+import com.example.footballmanager.util.TeamNotificationHelper
 import com.example.footballmanager.data.datastore.SessionManager
 import com.example.footballmanager.data.remote.RetrofitInstance
 import com.example.footballmanager.data.repository.AuthRepository
@@ -48,6 +49,7 @@ class FootballApp : Application() {
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+        TeamNotificationHelper.createChannel(this)
     }
 
     companion object {

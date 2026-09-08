@@ -38,6 +38,18 @@ class UserTeamRepository(
         userTeamPlayerDao.insert(UserTeamPlayer(userTeamId = userTeamId, playerId = playerId, slotNumber = slotNumber))
     }
 
+    suspend fun swapOrMoveSlot(userTeamId: Long, fromSlot: Int, toSlot: Int) {
+        if (fromSlot == toSlot) return
+        val from = userTeamPlayerDao.findSlot(userTeamId, fromSlot) ?: return
+        val to = userTeamPlayerDao.findSlot(userTeamId, toSlot)
+        userTeamPlayerDao.clearSlot(userTeamId, fromSlot)
+        userTeamPlayerDao.clearSlot(userTeamId, toSlot)
+        userTeamPlayerDao.insert(from.copy(id = 0, slotNumber = toSlot))
+        if (to != null) {
+            userTeamPlayerDao.insert(to.copy(id = 0, slotNumber = fromSlot))
+        }
+    }
+
     suspend fun clearTeamPlayers(userTeamId: Long) {
         userTeamPlayerDao.clearTeam(userTeamId)
     }

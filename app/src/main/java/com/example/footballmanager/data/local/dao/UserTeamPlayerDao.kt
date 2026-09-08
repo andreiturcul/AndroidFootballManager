@@ -12,6 +12,9 @@ interface UserTeamPlayerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: UserTeamPlayer): Long
 
+    @Query("SELECT * FROM user_team_players WHERE userTeamId = :userTeamId AND slotNumber = :slotNumber LIMIT 1")
+    suspend fun findSlot(userTeamId: Long, slotNumber: Int): UserTeamPlayer?
+
     @Query("DELETE FROM user_team_players WHERE userTeamId = :userTeamId AND slotNumber = :slotNumber")
     suspend fun clearSlot(userTeamId: Long, slotNumber: Int)
 

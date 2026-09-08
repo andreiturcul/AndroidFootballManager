@@ -76,7 +76,7 @@ public final class TransferDao_Impl implements TransferDao {
   }
 
   @Override
-  public Object insert(final Transfer transfer, final Continuation<? super Long> $completion) {
+  public Object insert(final Transfer transfer, final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -90,12 +90,11 @@ public final class TransferDao_Impl implements TransferDao {
           __db.endTransaction();
         }
       }
-    }, $completion);
+    }, arg1);
   }
 
   @Override
-  public Object addVotes(final long id, final int delta,
-      final Continuation<? super Unit> $completion) {
+  public Object addVotes(final long id, final int delta, final Continuation<? super Unit> arg2) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -118,7 +117,7 @@ public final class TransferDao_Impl implements TransferDao {
           __preparedStmtOfAddVotes.release(_stmt);
         }
       }
-    }, $completion);
+    }, arg2);
   }
 
   @Override
@@ -180,7 +179,7 @@ public final class TransferDao_Impl implements TransferDao {
   }
 
   @Override
-  public Object count(final Continuation<? super Integer> $completion) {
+  public Object count(final Continuation<? super Integer> arg0) {
     final String _sql = "SELECT COUNT(*) FROM transfers";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
@@ -208,7 +207,7 @@ public final class TransferDao_Impl implements TransferDao {
           _statement.release();
         }
       }
-    }, $completion);
+    }, arg0);
   }
 
   @NonNull

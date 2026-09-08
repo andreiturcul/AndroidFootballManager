@@ -1,7 +1,9 @@
 package com.example.footballmanager.data.local.dao;
 
 import android.database.Cursor;
+import android.os.CancellationSignal;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.CoroutinesRoom;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
@@ -73,7 +75,7 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
   }
 
   @Override
-  public Object insert(final UserTeamPlayer entry, final Continuation<? super Long> arg1) {
+  public Object insert(final UserTeamPlayer entry, final Continuation<? super Long> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       @NonNull
@@ -87,12 +89,12 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
   public Object clearSlot(final long userTeamId, final int slotNumber,
-      final Continuation<? super Unit> arg2) {
+      final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -115,11 +117,11 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
           __preparedStmtOfClearSlot.release(_stmt);
         }
       }
-    }, arg2);
+    }, $completion);
   }
 
   @Override
-  public Object clearTeam(final long userTeamId, final Continuation<? super Unit> arg1) {
+  public Object clearTeam(final long userTeamId, final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
@@ -140,7 +142,7 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
           __preparedStmtOfClearTeam.release(_stmt);
         }
       }
-    }, arg1);
+    }, $completion);
   }
 
   @Override
@@ -184,6 +186,49 @@ public final class UserTeamPlayerDao_Impl implements UserTeamPlayerDao {
         _statement.release();
       }
     });
+  }
+
+  @Override
+  public Object findSlot(final long userTeamId, final int slotNumber,
+      final Continuation<? super UserTeamPlayer> $completion) {
+    final String _sql = "SELECT * FROM user_team_players WHERE userTeamId = ? AND slotNumber = ? LIMIT 1";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, userTeamId);
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, slotNumber);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<UserTeamPlayer>() {
+      @Override
+      @Nullable
+      public UserTeamPlayer call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfUserTeamId = CursorUtil.getColumnIndexOrThrow(_cursor, "userTeamId");
+          final int _cursorIndexOfPlayerId = CursorUtil.getColumnIndexOrThrow(_cursor, "playerId");
+          final int _cursorIndexOfSlotNumber = CursorUtil.getColumnIndexOrThrow(_cursor, "slotNumber");
+          final UserTeamPlayer _result;
+          if (_cursor.moveToFirst()) {
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpUserTeamId;
+            _tmpUserTeamId = _cursor.getLong(_cursorIndexOfUserTeamId);
+            final long _tmpPlayerId;
+            _tmpPlayerId = _cursor.getLong(_cursorIndexOfPlayerId);
+            final int _tmpSlotNumber;
+            _tmpSlotNumber = _cursor.getInt(_cursorIndexOfSlotNumber);
+            _result = new UserTeamPlayer(_tmpId,_tmpUserTeamId,_tmpPlayerId,_tmpSlotNumber);
+          } else {
+            _result = null;
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
   }
 
   @NonNull

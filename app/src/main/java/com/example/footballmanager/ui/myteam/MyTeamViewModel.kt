@@ -4,9 +4,12 @@ package com.example.footballmanager.ui.myteam
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.footballmanager.FootballApp
 import com.example.footballmanager.data.local.entities.*
 import com.example.footballmanager.data.repository.FootballDataRepository
 import com.example.footballmanager.data.repository.UserTeamRepository
+import com.example.footballmanager.util.TeamBudget
+import com.example.footballmanager.util.TeamNotificationHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -106,7 +109,34 @@ class MyTeamViewModel(
     fun assignPlayer(slotNumber: Int, player: Player) {
         viewModelScope.launch {
             val team = _team.value ?: return@launch
+            val current = uiState.value.assignments
+            val previous = current[slotNumber]
+            val spentAfter = current.values.sumOf { it.price } - (previous?.price ?: 0.0) + player.price
             repository.assignPlayerToSlot(team.id, player.id, slotNumber)
+            val remaining = TeamBudget.MAX_EUROS_MILLIONS - spentAfter
+            _saveMessage.value = "Signed ${player.name} for €%.1fM. Remaining budget: €%.1fM"
+                .format(player.price, remaining)
+            TeamNotificationHelper.notifyPlayerSigned(
+                FootballApp.INSTANCE,
+                player.name,
+                player.price,
+                remaining
+            )
+        }
+    }
+
+    fun movePlayer(fromSlot: Int, toSlot: Int) {
+        val positions = uiState.value.positions
+        val fromPosition = positions.find { it.slotNumber == fromSlot }?.position
+        val toPosition = positions.find { it.slotNumber == toSlot }?.position
+        if (fromPosition == null || toPosition == null) return
+        if (!fromPosition.equals(toPosition, ignoreCase = true)) {
+            _saveMessage.value = "You can only drop ${fromPosition} players onto ${fromPosition} slots."
+            return
+        }
+        viewModelScope.launch {
+            val team = _team.value ?: return@launch
+            repository.swapOrMoveSlot(team.id, fromSlot, toSlot)
         }
     }
 
@@ -115,7 +145,9 @@ class MyTeamViewModel(
             _team.value?.let {
                 repository.submitTeam(it)
                 _team.value = it.copy(submitted = true)
-                _saveMessage.value = "Team saved successfully!"
+                val remaining = TeamBudget.MAX_EUROS_MILLIONS - uiState.value.assignments.values.sumOf { p -> p.price }
+                _saveMessage.value = "Team saved. Remaining budget: €%.1fM".format(remaining)
+                TeamNotificationHelper.notifyTeamSaved(FootballApp.INSTANCE, remaining)
             }
         }
     }
