@@ -1,0 +1,6 @@
+<resources>
+    <color name="purple_primary">#FF3F51B5</color>
+    <color name="purple_dark">#FF1A237E</color>
+    <color name="accent_gold">#FFFFC107</color>
+    <color name="bg_dark">#FF121620</color>
+</resources>
